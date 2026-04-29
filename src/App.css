@@ -6445,3 +6445,101 @@ select:focus {
   transform: translateX(4px);
 }
 
+.profile-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-card {
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+
+.review-rating {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.review-text {
+  color: var(--muted);
+}
+
+/* =========================================================
+   PROFILE REVIEWS SECTION
+========================================================= */
+
+.profile-section {
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 28px;
+  margin: 24px 0;
+}
+
+.profile-section h3 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.profile-reviews {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.review-card {
+  background: #f8f9fb;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px 22px;
+  text-align: left;
+}
+
+.review-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.review-text {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.empty-text {
+  color: var(--muted);
+  background: #f8f9fb;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.auth-google-btn {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 14px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.auth-google-btn:hover {
+  background: #f5f6f8;
+}

@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+
+import { auth, db } from "../firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
 
 const GENRES = [
   "Fantasy",
@@ -16,6 +22,42 @@ const GENRES = [
 ];
 
 export default function Signup({ navigate, onSignup }) {
+
+  const handleGoogleLogin = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const firebaseUser = result.user;
+
+    const userRef = doc(db, "users", firebaseUser.uid);
+    const userSnap = await getDoc(userRef);
+
+    let userData;
+
+    if (userSnap.exists()) {
+      userData = userSnap.data();
+    } else {
+      userData = {
+        uid: firebaseUser.uid,
+        name: firebaseUser.displayName || "BookBridge Reader",
+        email: firebaseUser.email,
+        joined: "2026",
+        favoriteAuthor: "",
+        readingGoal: 12,
+        preferredGenres: [],
+        bio: "",
+      };
+
+      await setDoc(userRef, userData);
+    }
+
+    localStorage.setItem("bookbridgeUser", JSON.stringify(userData));
+    onSignup(userData);
+    navigate("home");
+  } catch (err) {
+    setError("Google signup failed.");
+  }
+};
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,7 +68,9 @@ export default function Signup({ navigate, onSignup }) {
     preferredGenres: [],
   });
 
+
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -44,12 +88,19 @@ export default function Signup({ navigate, onSignup }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    const { name, email, password, confirmPassword, favoriteAuthor, readingGoal, preferredGenres } =
-      formData;
+    const {
+      name,
+      email,
+      password,
+      confirmPassword,
+      favoriteAuthor,
+      readingGoal,
+      preferredGenres,
+    } = formData;
 
     if (!name || !email || !password || !confirmPassword) {
       setError("Please fill in all required fields.");
@@ -61,17 +112,48 @@ export default function Signup({ navigate, onSignup }) {
       return;
     }
 
-    const newUser = {
-      name,
-      email,
-      joined: "2026",
-      favoriteAuthor,
-      readingGoal: readingGoal || "12",
-      preferredGenres,
-      bio: "",
-    };
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
 
-    onSignup(newUser);
+    try {
+      setLoading(true);
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const firebaseUser = userCredential.user;
+
+      await updateProfile(firebaseUser, {
+        displayName: name,
+      });
+
+      const newUser = {
+        uid: firebaseUser.uid,
+        name,
+        email: firebaseUser.email,
+        joined: "2026",
+        favoriteAuthor,
+        readingGoal: Number(readingGoal) || 12,
+        preferredGenres,
+        bio: "",
+      };
+
+      await setDoc(doc(db, "users", firebaseUser.uid), newUser);
+
+      localStorage.setItem("bookbridgeUser", JSON.stringify(newUser));
+
+      onSignup(newUser);
+      navigate("home");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -150,9 +232,11 @@ export default function Signup({ navigate, onSignup }) {
           </div>
 
           {error && <p className="auth-error">{error}</p>}
-
-          <button type="submit" className="auth-btn">
-            Sign Up
+<button type="button" className="auth-google-btn" onClick={handleGoogleLogin}>
+  <span>🔵</span> Continue with Google
+</button>
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 

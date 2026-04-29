@@ -266,7 +266,22 @@ export default function Profile({ user, shelves, reviews, navigate }) {
           </div>
         </div>
       </section>
+<div className="profile-section">
+  <h3>Your Reviews</h3>
 
+  {Object.keys(reviews).length === 0 ? (
+    <p className="empty-text">You haven’t written any reviews yet.</p>
+  ) : (
+    <div className="profile-reviews">
+      {Object.entries(reviews).map(([bookKey, review]) => (
+        <div key={bookKey} className="review-card">
+          <div className="review-rating">⭐ {review.rating}/5</div>
+          <div className="review-text">{review.text}</div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
       <section className="profile-v2-card">
         <div className="profile-section-head">
           <h2>Quick Actions</h2>
@@ -287,6 +302,7 @@ export default function Profile({ user, shelves, reviews, navigate }) {
           </button>
         </div>
       </section>
+      
     </div>
   );
 }

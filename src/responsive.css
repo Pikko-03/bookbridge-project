@@ -1,0 +1,1028 @@
+/* =========================================================
+   BOOKBRIDGE — RESPONSIVE FIXES v2
+   Import AFTER App.css in main.jsx:
+     import './responsive.css'
+   ========================================================= */
+
+
+/* =========================================================
+   1. HEADER — Desktop: original nav | Mobile: hamburger drawer
+   ========================================================= */
+
+/* --- DESKTOP: hide hamburger, show everything --- */
+.hamburger-btn {
+  display: none !important;
+}
+
+/* Drawer always hidden on desktop */
+.nav-drawer {
+  display: none;
+}
+
+.nav-drawer-overlay {
+  display: none;
+}
+
+/* Push search bar away from logo */
+.header-search {
+  margin-left: 2rem !important;
+}
+
+/* Header inner layout */
+.header-inner {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 62px !important;
+  padding: 0 clamp(1rem, 4vw, 3rem) !important;
+  gap: 0 !important;
+}
+
+/* --- MOBILE (≤ 900px): hamburger only --- */
+@media (max-width: 900px) {
+  .hamburger-btn {
+    display: flex !important;
+  }
+
+  .nav,
+  .header-search,
+  .header-auth {
+    display: none !important;
+  }
+
+  .nav-drawer {
+    display: flex;
+  }
+
+  .nav-drawer-overlay.open {
+    display: block;
+  }
+}
+
+/* Hamburger button */
+.hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  flex-shrink: 0;
+}
+
+.hamburger-btn span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.25s ease;
+}
+
+/* Drawer overlay */
+.nav-drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 200;
+  backdrop-filter: blur(2px);
+}
+
+.nav-drawer-overlay.open {
+  display: block;
+}
+
+/* Drawer panel */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  max-width: 85vw;
+  height: 100%;
+  background: var(--surface, #fff);
+  z-index: 201;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.nav-drawer.open {
+  right: 0;
+}
+
+/* Drawer header */
+.nav-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border, #e6e8eb);
+}
+
+.nav-drawer-logo {
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+.nav-drawer-logo span {
+  color: var(--accent, #5f63f2);
+}
+
+.nav-drawer-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--muted);
+  line-height: 1;
+  padding: 4px;
+}
+
+/* Drawer search */
+.nav-drawer-search {
+  display: flex;
+  align-items: center;
+  margin: 1rem 1.25rem 0;
+  background: var(--surface-soft, #f1f3f5);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.nav-drawer-search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  outline: none;
+  color: var(--text);
+}
+
+/* Drawer nav links */
+.nav-drawer-links {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0.75rem;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nav-drawer-btn {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.85rem 0.85rem;
+  border-radius: 14px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-drawer-btn:hover,
+.nav-drawer-btn.active {
+  background: var(--surface-soft, #f1f3f5);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.nav-drawer-btn .nav-badge {
+  background: var(--accent, #5f63f2);
+  color: white;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+/* Drawer auth section */
+.nav-drawer-auth {
+  padding: 1rem 1.25rem 1.5rem;
+  border-top: 1px solid var(--border, #e6e8eb);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.nav-drawer-auth .auth-mini-btn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+
+.nav-drawer-auth .login-mini-btn,
+.nav-drawer-auth .logout-mini-btn {
+  background: var(--surface-soft, #f1f3f5);
+  color: var(--text);
+}
+
+.nav-drawer-auth .signup-mini-btn {
+  background: var(--accent, #5f63f2);
+  color: white;
+}
+
+/* Profile pill in drawer */
+.nav-drawer-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 14px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s;
+  font-family: var(--font-sans);
+}
+
+.nav-drawer-profile:hover {
+  background: var(--surface-soft);
+}
+
+.nav-drawer-profile .header-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--text);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.nav-drawer-profile span {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+
+/* =========================================================
+   2. READING CHALLENGE CARD — compact horizontal
+   ========================================================= */
+
+.challenge-card-top {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.home-v2-challenge-card {
+  padding: 1.25rem 1.4rem !important;
+}
+
+.home-v2-challenge-card .challenge-big-number {
+  font-size: 2.6rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.library-challenge-card .challenge-card-top,
+.profile-goal-card .challenge-card-top {
+  flex-direction: row !important;
+}
+
+
+/* =========================================================
+   3. GLOBAL PADDING / SPACING
+   ========================================================= */
+
+.main-content {
+  padding: 2rem clamp(0.9rem, 4vw, 3.5rem) 4rem !important;
+}
+
+@media (max-width: 760px) {
+  .main-content {
+    padding: 1.5rem 1rem 3rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 1.25rem 0.85rem 2.5rem !important;
+  }
+}
+
+.home-v2-section {
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem) !important;
+}
+
+.library-section {
+  margin-bottom: 2.5rem !important;
+}
+
+
+/* =========================================================
+   4. STATS ROWS — always horizontal
+   ========================================================= */
+
+.home-v2-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 0.85rem !important;
+  margin-bottom: 3rem !important;
+}
+
+.home-v2-stats div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 18px;
+}
+
+.home-v2-stats strong {
+  font-size: 2rem !important;
+  margin-bottom: 0 !important;
+}
+
+.library-v2-stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 0.85rem !important;
+  margin-bottom: 2rem !important;
+}
+
+@media (max-width: 640px) {
+  .home-v2-stats {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.6rem !important;
+  }
+
+  .home-v2-stats strong {
+    font-size: 1.6rem !important;
+  }
+
+  .library-v2-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+
+/* =========================================================
+   5. FOOTER — aligned + social icons
+   ========================================================= */
+
+.footer-inner {
+  display: grid !important;
+  grid-template-columns: 1.2fr 2fr !important;
+  gap: 2.5rem !important;
+  padding: 0 clamp(1rem, 4vw, 3.5rem) 2rem !important;
+  align-items: start;
+}
+
+.footer-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 1.5rem !important;
+  text-align: left !important;
+}
+
+.footer-grid div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 0.55rem !important;
+}
+
+.footer-grid h4 {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.footer-grid button,
+.footer-grid a {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+
+.footer-grid button:hover,
+.footer-grid a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .footer-inner {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+
+  .footer-inner {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+
+/* =========================================================
+   6. BOOK DETAIL PAGE
+   ========================================================= */
+
+/* Back button: always left */
+.bd-back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  text-align: left !important;
+  margin-left: 0 !important;
+  margin-bottom: 1.25rem;
+}
+
+/* People reading/want to read: side by side equal */
+.bd-social-row {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+  gap: 0.85rem !important;
+}
+
+.bd-social-row div {
+  min-width: unset !important;
+  flex: unset !important;
+}
+
+/* Rating & reviews card — less vertical space */
+.bd-review-overview {
+  padding: 1.1rem 1.25rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.bd-rating-breakdown {
+  gap: 0.6rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.bd-review-score {
+  margin-bottom: 1rem !important;
+}
+
+/* Popular books title + rating/sort — left aligned */
+.bd-section-head {
+  text-align: left !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.bd-section-head h2,
+.bd-section-head p {
+  text-align: left !important;
+}
+
+.bd-section-head select {
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .bd-hero {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .bd-cover-panel {
+    max-width: 160px;
+    margin: 0;
+  }
+
+  .bd-main-info h1 {
+    font-size: 2rem;
+  }
+
+  .bd-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 1.5rem;
+  }
+
+  .bd-tabs::-webkit-scrollbar { display: none; }
+
+  .bd-grid-section {
+    grid-template-columns: 1fr !important;
+  }
+
+  .bd-review-card {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* =========================================================
+   7. LOGIN / AUTH — login + alert in one viewport
+   ========================================================= */
+
+.auth-page {
+  min-height: calc(100svh - 62px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 1rem;
+}
+
+.auth-notice {
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto 0.75rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .auth-card h1 {
+    font-size: 1.7rem;
+  }
+
+  .auth-card-wide {
+    max-width: 100%;
+  }
+
+  .genre-pill {
+    font-size: 0.76rem;
+    padding: 0.38rem 0.7rem;
+  }
+}
+
+
+/* =========================================================
+   8. AI RECOMMEND — 3 chips + compact taste card
+   ========================================================= */
+
+/* Show only 3 quick prompt chips */
+.quick-prompt-row .genre-chip:nth-child(n+4) {
+  display: none;
+}
+
+/* Show only 3 genres in taste profile */
+.taste-genre-list span:nth-child(n+4) {
+  display: none;
+}
+
+.ai-new-hero {
+  padding: clamp(1.5rem, 4vw, 3.5rem) !important;
+  margin-bottom: 1.5rem !important;
+}
+
+@media (max-width: 760px) {
+  .ai-new-hero {
+    grid-template-columns: 1fr !important;
+    border-radius: 22px !important;
+    gap: 1.5rem !important;
+  }
+
+  .ai-hero-actions,
+  .ai-command-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ai-hero-actions .btn,
+  .ai-command-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ai-results-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+
+/* =========================================================
+   9. MY BOOKS — spacing + 2-col book grid
+   ========================================================= */
+
+.library-v2-hero {
+  padding: clamp(1.5rem, 4vw, 3rem) !important;
+  margin-bottom: 1.25rem !important;
+  border-radius: 24px !important;
+}
+
+.library-v2-hero h1 {
+  font-size: clamp(2rem, 5vw, 4rem) !important;
+  margin-bottom: 0.6rem !important;
+}
+
+@media (max-width: 760px) {
+  .library-v2-hero {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+
+  .library-book-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.85rem !important;
+  }
+
+  .library-continue-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.85rem !important;
+  }
+
+  .library-section {
+    margin-bottom: 2rem !important;
+  }
+
+  .library-toolbar {
+    padding: 1rem !important;
+    border-radius: 20px !important;
+  }
+
+  .library-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+    padding-bottom: 0.35rem;
+    gap: 0.5rem !important;
+  }
+
+  .library-tabs::-webkit-scrollbar { display: none; }
+
+  .library-tab {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    padding: 0.42rem 0.75rem;
+  }
+
+  .library-controls {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .library-controls input,
+  .library-controls select {
+    min-width: 100% !important;
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   10. PROFILE — round avatar, horizontal stats & actions
+   ========================================================= */
+
+.profile-v2-avatar {
+  border-radius: 999px !important;
+  width: 80px !important;
+  height: 80px !important;
+  font-size: 2rem !important;
+  flex-shrink: 0 !important;
+}
+
+.profile-v2-hero {
+  padding: clamp(1.5rem, 4vw, 3rem) !important;
+  border-radius: 24px !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.profile-v2-social {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 0.85rem !important;
+  min-width: unset !important;
+}
+
+.profile-v2-grid {
+  display: grid !important;
+  grid-template-columns: 1.1fr 0.9fr !important;
+  gap: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.profile-mini-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 0.75rem !important;
+}
+
+.profile-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 0.65rem !important;
+}
+
+/* Reading Challenge row: "Reading Challenge" + "2026" always horizontal */
+.profile-goal-card .profile-card-head {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+@media (max-width: 900px) {
+  .profile-v2-hero {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .profile-v2-social {
+    width: 100% !important;
+  }
+
+  .profile-v2-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-v2-left {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+
+  .profile-v2-hero-main {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+    padding-top: 1.25rem !important;
+  }
+
+  .profile-hero-top {
+    position: static !important;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .profile-actions .btn {
+    flex: 1 1 auto;
+    min-width: calc(50% - 0.35rem);
+  }
+
+  .profile-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* =========================================================
+   11. HOME — hero + book grid
+   ========================================================= */
+
+.home-v2-hero {
+  padding: clamp(1.75rem, 5vw, 4rem) !important;
+  margin-bottom: 1.5rem !important;
+  border-radius: 26px !important;
+}
+
+@media (max-width: 980px) {
+  .home-v2-hero {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-v2-hero {
+    padding: 1.5rem 1.1rem !important;
+    border-radius: 20px !important;
+  }
+
+  .home-v2-hero-copy h1 {
+    font-size: 1.9rem !important;
+  }
+
+  .home-v2-hero-copy p {
+    font-size: 0.9rem !important;
+  }
+
+  .home-v2-actions {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .home-v2-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .home-v2-category-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .home-v2-category-row::-webkit-scrollbar { display: none; }
+
+  .minimal-book-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.85rem !important;
+  }
+}
+
+
+/* =========================================================
+   12. SEARCH — hero, filters, grid
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .search-v2-hero {
+    padding: 1.75rem 1.1rem !important;
+    border-radius: 20px !important;
+  }
+
+  .search-v2-hero h1 {
+    font-size: 2rem !important;
+  }
+
+  .search-v2-form {
+    flex-direction: column;
+    border-radius: 18px;
+  }
+
+  .search-v2-form button {
+    margin: 0 0.5rem 0.5rem;
+  }
+
+  .search-v2-filter-row {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .search-v2-filter-row .filter-group {
+    min-width: 100%;
+  }
+
+  .filter-group select {
+    width: 100%;
+  }
+
+  .search-v2-results-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    margin-top: 1.5rem;
+  }
+
+  .bento-books-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.85rem !important;
+  }
+}
+
+
+/* =========================================================
+   13. ABOUT / CAREERS / HELP
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .about-hero {
+    padding: 2rem 1.1rem !important;
+    border-radius: 20px !important;
+    margin: 1rem auto 2rem !important;
+    min-height: auto !important;
+  }
+
+  .about-hero h1 {
+    font-size: 2rem !important;
+  }
+
+  .about-section {
+    margin-bottom: 3rem !important;
+  }
+
+  .about-two-col,
+  .about-card-grid,
+  .about-value-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+
+  .about-cta {
+    padding: 2rem 1.25rem !important;
+    border-radius: 20px !important;
+  }
+
+  .about-cta .btn {
+    width: 100%;
+  }
+
+  .careers-page {
+    padding: 2rem 1rem !important;
+  }
+
+  .careers-hero h1 {
+    font-size: 2rem !important;
+  }
+
+  .careers-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  .help-hero {
+    padding: 2rem 1.1rem !important;
+    border-radius: 20px !important;
+  }
+
+  .help-hero h1 {
+    font-size: 2rem !important;
+  }
+
+  .help-quick-links button {
+    flex: 1 1 calc(50% - 0.4rem);
+    text-align: center;
+  }
+
+  .help-contact-card {
+    padding: 2rem 1.25rem !important;
+    border-radius: 20px !important;
+  }
+
+  .help-contact-card .btn {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   14. GLOBAL OVERFLOW GUARD + TOAST
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .home-v2,
+  .search-v2,
+  .library-v2,
+  .profile-v2,
+  .ai-recommend-page,
+  .about-page,
+  .careers-page,
+  .help-page,
+  .auth-page,
+  .goodreads-detail-page,
+  .book-detail-v2 {
+    overflow-x: hidden;
+  }
+
+  .toast {
+    bottom: 1.25rem;
+    max-width: calc(100vw - 2rem);
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+  }
+}
+
+
+/* =========================================================
+   15. SHELF SELECTOR — never overflow screen edge
+   ========================================================= */
+
+.shelf-select-menu {
+  left: auto !important;
+  right: 0 !important;
+}

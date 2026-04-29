@@ -14,6 +14,16 @@ import Careers from "./pages/Careers";
 import HelpCenter from "./pages/HelpCenter";
 import "./App.css";
 
+import { signOut } from "firebase/auth";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
+import { auth, db } from "./firebase";
+
 export default function App() {
   const [page, setPage] = useState("home");
   const [selectedBook, setSelectedBook] = useState(null);
@@ -28,6 +38,14 @@ export default function App() {
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [theme, setTheme] = useState("light");
   const [toast, setToast] = useState("");
+
+  const getBookDocId = (book) => {
+    return encodeURIComponent(book?.key || book?.title || Date.now());
+  };
+
+  const getReviewDocId = (bookKey) => {
+    return encodeURIComponent(bookKey || Date.now());
+  };
 
   useEffect(() => {
     const savedUser = localStorage.getItem("bookbridgeUser");
@@ -44,6 +62,68 @@ export default function App() {
     if (savedRecentlyViewed) setRecentlyViewed(JSON.parse(savedRecentlyViewed));
     if (savedTheme) setTheme(savedTheme);
   }, []);
+
+  useEffect(() => {
+    const loadShelvesFromFirestore = async () => {
+      if (!user?.uid) return;
+
+      try {
+        const shelvesRef = collection(db, "users", user.uid, "shelves");
+        const snapshot = await getDocs(shelvesRef);
+
+        const firebaseShelves = { want: [], reading: [], read: [] };
+
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+
+          if (data.shelf && data.book && firebaseShelves[data.shelf]) {
+            firebaseShelves[data.shelf].push(data.book);
+          }
+        });
+
+        setShelves(firebaseShelves);
+        localStorage.setItem("bookbridgeShelves", JSON.stringify(firebaseShelves));
+      } catch (error) {
+        console.error("Failed to load shelves:", error);
+      }
+    };
+
+    loadShelvesFromFirestore();
+  }, [user?.uid]);
+
+  useEffect(() => {
+    const loadReviewsFromFirestore = async () => {
+      if (!user?.uid) return;
+
+      try {
+        const reviewsRef = collection(db, "users", user.uid, "reviews");
+        const snapshot = await getDocs(reviewsRef);
+
+        const firebaseReviews = {};
+
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+
+          if (data.bookKey) {
+            firebaseReviews[data.bookKey] = {
+              rating: data.rating,
+              text: data.text,
+              date: data.date,
+              helpful: data.helpful || 0,
+              updatedAt: data.updatedAt,
+            };
+          }
+        });
+
+        setReviews(firebaseReviews);
+        localStorage.setItem("bookbridgeReviews", JSON.stringify(firebaseReviews));
+      } catch (error) {
+        console.error("Failed to load reviews:", error);
+      }
+    };
+
+    loadReviewsFromFirestore();
+  }, [user?.uid]);
 
   useEffect(() => {
     localStorage.setItem("bookbridgeShelves", JSON.stringify(shelves));
@@ -104,12 +184,17 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  const addToShelf = (shelf, book) => {
+  const addToShelf = async (shelf, book) => {
     if (!user) {
       requireAuth("book", "Please log in to save books.");
       setSelectedBook(book);
       return;
     }
+
+    const updatedBook = {
+      ...book,
+      addedAt: new Date().toISOString(),
+    };
 
     setShelves((prev) => {
       const updated = { ...prev };
@@ -118,9 +203,28 @@ export default function App() {
         updated[key] = updated[key].filter((b) => b.key !== book.key);
       });
 
-      updated[shelf] = [...updated[shelf], book];
+      updated[shelf] = [...updated[shelf], updatedBook];
+
+      localStorage.setItem("bookbridgeShelves", JSON.stringify(updated));
+
       return updated;
     });
+
+    if (user?.uid) {
+      try {
+        const bookId = getBookDocId(book);
+
+        await setDoc(doc(db, "users", user.uid, "shelves", bookId), {
+          shelf,
+          book: updatedBook,
+          updatedAt: new Date().toISOString(),
+        });
+      } catch (error) {
+        console.error("Failed to save shelf:", error);
+        showToast("Saved locally, but Firebase failed");
+        return;
+      }
+    }
 
     const label =
       shelf === "want"
@@ -132,7 +236,7 @@ export default function App() {
     showToast(`Added to ${label}`);
   };
 
-  const removeFromShelf = (book) => {
+  const removeFromShelf = async (book) => {
     setShelves((prev) => {
       const updated = { ...prev };
 
@@ -140,8 +244,21 @@ export default function App() {
         updated[key] = updated[key].filter((b) => b.key !== book.key);
       });
 
+      localStorage.setItem("bookbridgeShelves", JSON.stringify(updated));
+
       return updated;
     });
+
+    if (user?.uid) {
+      try {
+        const bookId = getBookDocId(book);
+        await deleteDoc(doc(db, "users", user.uid, "shelves", bookId));
+      } catch (error) {
+        console.error("Failed to remove shelf:", error);
+        showToast("Removed locally, but Firebase failed");
+        return;
+      }
+    }
 
     showToast("Removed from shelf");
   };
@@ -154,13 +271,41 @@ export default function App() {
     return null;
   };
 
-  const addReview = (bookKey, review) => {
+  const addReview = async (bookKey, review) => {
     if (!user) {
       requireAuth("book", "Please log in to write a review.");
       return;
     }
 
-    setReviews((prev) => ({ ...prev, [bookKey]: review }));
+    const reviewData = {
+      ...review,
+      bookKey,
+      date: review.date || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      helpful: review.helpful || 0,
+    };
+
+    setReviews((prev) => {
+      const updated = { ...prev, [bookKey]: reviewData };
+      localStorage.setItem("bookbridgeReviews", JSON.stringify(updated));
+      return updated;
+    });
+
+    if (user?.uid) {
+      try {
+        const reviewId = getReviewDocId(bookKey);
+
+        await setDoc(
+          doc(db, "users", user.uid, "reviews", reviewId),
+          reviewData
+        );
+      } catch (error) {
+        console.error("Failed to save review:", error);
+        showToast("Review saved locally, but Firebase failed");
+        return;
+      }
+    }
+
     showToast("Review saved");
   };
 
@@ -186,13 +331,18 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("bookbridgeUser");
+  const handleLogout = async () => {
+    await signOut(auth);
+
     setUser(null);
-    setPage("home");
-    setAuthMessage("");
-    showToast("Logged out");
-    window.scrollTo(0, 0);
+    setShelves({ want: [], reading: [], read: [] });
+    setReviews({});
+
+    localStorage.removeItem("bookbridgeUser");
+    localStorage.removeItem("bookbridgeShelves");
+    localStorage.removeItem("bookbridgeReviews");
+
+    navigate("home");
   };
 
   const totalBooks = Object.values(shelves).flat().length;
@@ -280,28 +430,28 @@ export default function App() {
           ))}
 
         {page === "ai" && (
-  <AIRecommend
-    navigate={navigate}
-    shelves={shelves}
-    user={user}
-    addToShelf={addToShelf}
-    removeFromShelf={removeFromShelf}
-    getShelf={getShelf}
-  />
-)}
+          <AIRecommend
+            navigate={navigate}
+            shelves={shelves}
+            user={user}
+            addToShelf={addToShelf}
+            removeFromShelf={removeFromShelf}
+            getShelf={getShelf}
+          />
+        )}
 
-{page === "about" && <About navigate={navigate} />}
-{page === "careers" && <Careers navigate={navigate} />}
-{page === "help" && <HelpCenter navigate={navigate} />}
+        {page === "about" && <About navigate={navigate} />}
+        {page === "careers" && <Careers navigate={navigate} />}
+        {page === "help" && <HelpCenter navigate={navigate} />}
 
         {page === "login" && <Login navigate={navigate} onLogin={handleLogin} />}
 
         {page === "signup" && (
           <Signup navigate={navigate} onSignup={handleSignup} />
         )}
- 
       </main>
-<Footer navigate={navigate} />
+
+      <Footer navigate={navigate} />
 
       {toast && <div className="toast">{toast}</div>}
     </div>
