@@ -79,7 +79,10 @@ export default function App() {
     } else {
       const userData = {
         uid: firebaseUser.uid,
-        name: firebaseUser.displayName || "BookBridge Reader",
+        name:
+  firebaseUser.displayName ||
+  firebaseUser.email?.split("@")[0] ||
+  "BookBridge Reader",
         email: firebaseUser.email,
         joined: "2026",
         favoriteAuthor: "",

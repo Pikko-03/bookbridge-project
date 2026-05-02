@@ -7413,3 +7413,134 @@ select:focus {
     transform: translateY(0);
   }
 }
+.profile-add-bio-btn {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.profile-add-bio-btn:hover {
+  text-decoration: underline;
+}
+
+.profile-add-bio-btn {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.profile-add-bio-btn:hover {
+  text-decoration: underline;
+}
+
+.profile-meta {
+   margin-top: 20px;
+  display: flex;
+  gap: 10px; /* spacing between pills */
+  margin-top: 8px;
+}
+
+.profile-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  background: rgba(99, 102, 241, 0.12); /* soft purple */
+  color: #6366f1;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+.profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.profile-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.profile-add-bio-btn {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 800;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 4px;
+}
+
+.profile-add-bio-btn:hover {
+  text-decoration: underline;
+}
+
+.profile-bio-display {
+  margin-bottom: 4px;
+}
+
+.profile-editable-card {
+  cursor: pointer;
+}
+
+.profile-editable-card input:disabled,
+.profile-editable-card textarea:disabled {
+  cursor: pointer;
+}
+
+.profile-editable-card:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+.profile-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.profile-section-head .profile-edit-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+@media (max-width: 640px) {
+  .profile-section-head {
+    flex-direction: column;
+  }
+
+  .profile-section-head .btn,
+  .profile-section-head .profile-edit-actions {
+    width: 100%;
+  }
+
+  .profile-section-head .profile-edit-actions .btn {
+    flex: 1;
+  }
+}
+
+.profile-section-head {
+  text-align: left;
+}
+
+.profile-section-head h2,
+.profile-section-head p {
+  text-align: left;
+}

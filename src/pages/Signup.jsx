@@ -38,31 +38,34 @@ export default function Signup({ navigate, onSignup }) {
   const [loading, setLoading] = useState(false);
 
   const createUserProfileIfNeeded = async (firebaseUser, extraData = {}) => {
-    const userRef = doc(db, "users", firebaseUser.uid);
-    const userSnap = await getDoc(userRef);
+  const userRef = doc(db, "users", firebaseUser.uid);
+  const userSnap = await getDoc(userRef);
 
-    if (userSnap.exists()) {
-      return userSnap.data();
-    }
+  const existingData = userSnap.exists() ? userSnap.data() : {};
 
-    const userData = {
-      uid: firebaseUser.uid,
-      name:
-        extraData.name ||
-        firebaseUser.displayName ||
-        firebaseUser.email?.split("@")[0] ||
-        "BookBridge Reader",
-      email: firebaseUser.email,
-      joined: "2026",
-      favoriteAuthor: extraData.favoriteAuthor || "",
-      readingGoal: Number(extraData.readingGoal) || 12,
-      preferredGenres: extraData.preferredGenres || [],
-      bio: "",
-    };
-
-    await setDoc(userRef, userData);
-    return userData;
+  const userData = {
+    ...existingData,
+    uid: firebaseUser.uid,
+    name:
+      extraData.name ||
+      firebaseUser.displayName ||
+      firebaseUser.email?.split("@")[0] ||
+      "BookBridge Reader",
+    email: firebaseUser.email,
+    joined: existingData.joined || "2026",
+    favoriteAuthor: extraData.favoriteAuthor || existingData.favoriteAuthor || "",
+    readingGoal: Number(extraData.readingGoal || existingData.readingGoal || 12),
+    preferredGenres:
+      extraData.preferredGenres?.length > 0
+        ? extraData.preferredGenres
+        : existingData.preferredGenres || [],
+    bio: existingData.bio || "",
   };
+
+  await setDoc(userRef, userData, { merge: true });
+
+  return userData;
+};
 
   const handleGoogleLogin = async () => {
     setError("");
@@ -150,15 +153,19 @@ export default function Signup({ navigate, onSignup }) {
       );
 
       await updateProfile(userCredential.user, {
-        displayName: name,
-      });
+  displayName: name,
+});
 
-      const userData = await createUserProfileIfNeeded(userCredential.user, {
-        name,
-        favoriteAuthor,
-        readingGoal,
-        preferredGenres,
-      });
+await userCredential.user.reload();
+
+const refreshedUser = auth.currentUser;
+
+const userData = await createUserProfileIfNeeded(refreshedUser, {
+  name,
+  favoriteAuthor,
+  readingGoal,
+  preferredGenres,
+});
 
       onSignup(userData);
       navigate("home");
