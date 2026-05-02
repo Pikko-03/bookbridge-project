@@ -27,9 +27,7 @@ export default function Footer({ navigate }) {
           <div>
             <h4>Explore</h4>
             <button onClick={() => navigate("search")}>Browse Books</button>
-            <button onClick={() => navigate("recommendations")}>
-              AI Recommendations
-            </button>
+            <button onClick={() => navigate("ai")}>Recommendations</button>
             <button>Top Rated</button>
             <button>Genres</button>
           </div>
@@ -38,7 +36,7 @@ export default function Footer({ navigate }) {
             <h4>Support</h4>
             <button onClick={() => navigate("help")}>Help Center</button>
             <button onClick={() => navigate("contact")}>Contact</button>
-            <button>Community</button>
+            <button onClick={() => navigate("community")}>Community</button>
             <button>Feedback</button>
           </div>
 

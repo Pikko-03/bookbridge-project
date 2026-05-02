@@ -40,7 +40,7 @@ export default function AIRecommend({
   const wantBooks = shelves?.want || [];
   const readingBooks = shelves?.reading || [];
   const totalBooks = Object.values(shelves || {}).flat().length;
-
+const [hasSearched, setHasSearched] = useState(false);
   const normalizeBook = (book) => ({
     ...book,
     title: book.title || "Untitled Book",
@@ -101,6 +101,7 @@ export default function AIRecommend({
     const seed = getSeed();
 
     setLoading(true);
+    setHasSearched(true);
     setReason(seed.reason);
     setRecommendations([]);
 
@@ -138,6 +139,7 @@ export default function AIRecommend({
     setPrompt("");
     setRecommendations([]);
     setReason("");
+    setHasSearched(false);
   };
 
   return (
@@ -291,14 +293,43 @@ export default function AIRecommend({
       )}
 
       {!loading && recommendations.length === 0 && (
-        <section className="empty-state">
-          <div className="empty-icon">📚</div>
-          <h3>Start your recommendation journey</h3>
-          <p>
-            Use a prompt, or click “Recommend for Me” to get suggestions from your profile and shelves.
-          </p>
-        </section>
+  <section className="empty-state ai-empty-results">
+    <div className="empty-icon">{hasSearched ? "🔎" : "📚"}</div>
+
+    <h3>
+      {hasSearched
+        ? "No recommendations found"
+        : "Start your recommendation journey"}
+    </h3>
+
+    <p>
+      {hasSearched
+        ? "Try a simpler prompt, choose one of the quick prompts, or update your reading preferences."
+        : "Use a prompt, or click Recommend for Me to get suggestions from your profile and shelves."}
+    </p>
+
+    <div className="empty-actions">
+      {hasSearched ? (
+        <>
+          <button
+            className="btn btn-primary"
+            onClick={() => setPrompt("Fantasy books for beginners")}
+          >
+            Try a sample prompt
+          </button>
+
+          <button className="btn btn-secondary" onClick={clearAll}>
+            Reset
+          </button>
+        </>
+      ) : (
+        <button className="btn btn-primary" onClick={getRecommendations}>
+          Recommend for Me
+        </button>
       )}
+    </div>
+  </section>
+)}
     </div>
   );
 }

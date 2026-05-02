@@ -60,33 +60,78 @@ export default function Search({
   };
 
   const fetchBooks = async () => {
-    const searchTerm = buildSearchTerm();
+  const searchTerm = buildSearchTerm();
 
-    setLoading(true);
-    setPage(1);
-    setSearchedText(searchTerm);
+  setLoading(true);
+  setPage(1);
+  setSearchedText(searchTerm);
 
-    try {
-      const res = await fetch(
-        `https://openlibrary.org/search.json?q=${encodeURIComponent(
-          searchTerm
-        )}&limit=80&fields=key,title,author_name,cover_i,first_publish_year,subject,edition_count`
+  try {
+    const fields =
+      "key,title,author_name,cover_i,first_publish_year,subject,edition_count";
+
+    const mainRes = await fetch(
+      `https://openlibrary.org/search.json?q=${encodeURIComponent(
+        searchTerm
+      )}&limit=80&fields=${fields}`
+    );
+
+    const mainData = await mainRes.json();
+
+    let docs = mainData.docs || [];
+
+    // Fallback 1: if normal search is weak, try title search
+    if (docs.length < 6 && query.trim()) {
+      const titleRes = await fetch(
+        `https://openlibrary.org/search.json?title=${encodeURIComponent(
+          query.trim()
+        )}&limit=80&fields=${fields}`
       );
 
-      const data = await res.json();
-
-      const cleaned = (data.docs || [])
-        .filter((book) => book.title && book.key)
-        .map(normalizeBook);
-
-      setBooks(cleaned);
-    } catch (error) {
-      console.error("Search failed:", error);
-      setBooks([]);
+      const titleData = await titleRes.json();
+      docs = [...docs, ...(titleData.docs || [])];
     }
 
+    // Fallback 2: if category search is weak, use subject search
+    if (docs.length < 6 && activeCategory !== "All") {
+      const subjectRes = await fetch(
+        `https://openlibrary.org/subjects/${activeCategory
+          .toLowerCase()
+          .replaceAll(" ", "_")}.json?limit=40`
+      );
+
+      const subjectData = await subjectRes.json();
+
+      const subjectDocs = (subjectData.works || []).map((book) => ({
+        key: book.key,
+        title: book.title,
+        author_name: book.authors?.map((a) => a.name) || ["Unknown Author"],
+        cover_i: book.cover_id,
+        first_publish_year: book.first_publish_year,
+        subject: book.subject || [],
+      }));
+
+      docs = [...docs, ...subjectDocs];
+    }
+
+    const uniqueBooks = Array.from(
+      new Map(
+        docs
+          .filter((book) => book.title && book.key)
+          .map((book) => [book.key, book])
+      ).values()
+    );
+
+    const cleaned = uniqueBooks.map(normalizeBook);
+
+    setBooks(cleaned);
+  } catch (error) {
+    console.error("Search failed:", error);
+    setBooks([]);
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
   useEffect(() => {
     fetchBooks();
@@ -168,6 +213,16 @@ export default function Search({
     return pages;
   };
 
+  const getResultsTitle = () => {
+  if (searchedText === "popular books") return "Popular Books";
+
+  if (searchedText.toLowerCase().endsWith(" books") && activeCategory !== "All") {
+    return searchedText.replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  return `Search results for "${searchedText}"`;
+};
+
   return (
     <div className="search-v2">
       <section className="search-v2-hero">
@@ -190,7 +245,7 @@ export default function Search({
 
       <section className="search-v2-results-head">
   <div>
-    <h2>{searchedText}</h2>
+    <h2>{getResultsTitle()}</h2>
     <p>
       Showing{" "}
       {filteredBooks.length === 0
@@ -343,10 +398,18 @@ export default function Search({
           )}
         </>
       ) : (
-        <div className="empty-state">
-          <div className="empty-icon">🔎</div>
-          <h3>No books found</h3>
-          <p>Try a different keyword, category, or remove filters.</p>
+       <div className="empty-state search-empty-state">
+  <div className="empty-icon">🔎</div>
+
+  <h3>
+    {searchedText && searchedText !== "popular books"
+      ? `No books found for "${searchedText}"`
+      : "No books found"}
+  </h3>
+
+  <p>
+    Try a different keyword, choose another category, or reset your filters.
+  </p>
           <button
             className="btn btn-primary"
             onClick={() => {

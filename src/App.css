@@ -56,6 +56,7 @@
   --radius-lg: 24px;
 }
 
+
 *,
 *::before,
 *::after {
@@ -82,6 +83,8 @@ body {
   color: var(--text);
   line-height: 1.6;
   letter-spacing: -0.01em;
+  color: var(--text);
+-webkit-text-size-adjust: 100%;
 }
 
 ::selection {
@@ -6214,7 +6217,7 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url("https://images.unsplash.com/photo-1579370318443-8da816457e3d?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bGlicmFyaWVzfGVufDB8fDB8fHww"); /* your image */
+  background-image: url("https://i0.wp.com/apeejay.news/wp-content/uploads/2023/10/281023-10-most-read-books-Blog.jpg?resize=740%2C524&ssl=1"); /* your image */
   background-repeat: no-repeat;
   background-position: center;
    background-size: cover; 
@@ -6703,5 +6706,710 @@ select:focus {
   }
   .dialog-actions .btn {
     width: 100%;
+  }
+}
+
+.header-search-button {
+  justify-content: flex-start;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.nav-drawer-search-button {
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.logout-modal {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+  animation: modalPop 0.2s ease;
+}
+
+.logout-modal-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1rem;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.logout-modal h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.logout-modal p {
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.logout-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.logout-modal-actions .btn {
+  min-width: 130px;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .logout-modal {
+    padding: 1.5rem;
+  }
+
+  .logout-modal-actions {
+    flex-direction: column;
+  }
+
+  .logout-modal-actions .btn {
+    width: 100%;
+  }
+}
+
+/* STEP 2 — Browse/Search fixes */
+
+.search-v2-hero,
+.search-v2-hero h1,
+.search-v2-hero p,
+.search-v2-results-head,
+.search-v2-results-head h2,
+.search-v2-results-head p {
+  text-align: left !important;
+}
+
+.search-v2-hero > div {
+  align-items: center !important;
+}
+
+.search-v2-kicker,
+.search-v2-form {
+  align-items: center !important;
+}
+
+.search-v2-results-head {
+  display: block !important;
+}
+
+.search-v2-results-head h2 {
+  text-transform: none !important;
+}
+
+@media (max-width: 760px) {
+  .search-v2-filter-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.75rem !important;
+    align-items: end !important;
+  }
+
+  .search-v2-filter-row .filter-group {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .search-v2-filter-row .filter-group select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .search-v2-filter-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* STEP 3 — Book Detail polish */
+
+.bd-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  margin-bottom: 1.25rem;
+}
+
+.bd-back-btn {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+.bd-buy-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.bd-buy-card span {
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+}
+
+.bd-buy-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 999px;
+  background: var(--text);
+  color: white !important;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.88rem;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.bd-buy-btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+.bd-buy-btn.secondary {
+  background: var(--surface-soft);
+  color: var(--text) !important;
+}
+
+.bd-buy-btn.secondary:hover {
+  background: var(--border);
+}
+
+.bd-author-link {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0;
+}
+
+.bd-author-link:hover {
+  text-decoration: underline;
+}
+
+.bd-rating-clickable {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.bd-rating-clickable:hover strong,
+.bd-rating-clickable:hover span {
+  color: var(--accent);
+}
+
+.bd-author-card-v2,
+.bd-reviews-section {
+  scroll-margin-top: 110px;
+}
+
+.bd-review-overview {
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+  border-radius: 20px !important;
+}
+
+.bd-review-score {
+  margin-bottom: 1rem !important;
+}
+
+.bd-review-score strong {
+  font-size: 1.6rem !important;
+}
+
+.bd-rating-breakdown {
+  gap: 0.55rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.bd-rating-line-row {
+  gap: 0.65rem !important;
+}
+
+.bd-review-card {
+  padding: 1rem !important;
+  border-radius: 18px !important;
+}
+
+.bd-review-search-row {
+  gap: 0.7rem !important;
+}
+
+@media (max-width: 640px) {
+  .bd-cover-panel {
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bd-buy-card,
+  .bd-buy-btn {
+    width: 100%;
+  }
+
+  .bd-review-overview {
+    padding: 0.85rem !important;
+  }
+
+  .bd-rating-line-row {
+    grid-template-columns: 64px 1fr 56px !important;
+    gap: 0.45rem !important;
+  }
+
+  .bd-review-card {
+    padding: 0.85rem !important;
+  }
+}
+
+/* STEP 4 — Empty states + loading polish */
+
+.empty-state {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  color: var(--text);
+}
+
+.empty-icon {
+  font-size: 2.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.empty-state h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.45rem;
+}
+
+.empty-state p {
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto 1.25rem;
+  line-height: 1.6;
+}
+
+.empty-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.search-empty-state,
+.ai-empty-results {
+  margin-top: 1rem;
+}
+
+.skeleton-book-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.9rem;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-soft),
+    var(--border),
+    var(--surface-soft)
+  );
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .empty-state {
+    padding: 1.5rem 1rem;
+  }
+
+  .empty-actions {
+    flex-direction: column;
+  }
+
+  .empty-actions .btn {
+    width: 100%;
+  }
+}
+
+/* Fix AI Recommendations results header alignment */
+.ai-results-head,
+.ai-results-head h2,
+.ai-results-head p,
+.ai-results-head .section-title,
+.ai-results-head .section-subtitle {
+  text-align: left !important;
+}
+
+.ai-results-head {
+  align-items: flex-start !important;
+ 
+}
+
+@media (max-width: 760px) {
+  .ai-results-head,
+  .ai-results-head h2,
+  .ai-results-head p,
+  .ai-results-head .section-title,
+  .ai-results-head .section-subtitle {
+    text-align: left !important;
+  }
+}
+
+/* STEP 3 — Center Book Detail left panel on mobile */
+
+/* FINAL OVERRIDE — Book Detail mobile center alignment */
+@media (max-width: 640px) {
+  .bd-hero {
+    justify-items: center !important;
+  }
+
+  .bd-cover-panel {
+    width: 100% !important;
+    max-width: 260px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .bd-cover-panel .book-cover,
+  .bd-cover-panel .bd-cover {
+    width: 220px !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .bd-cover-panel .shelf-selector,
+  .bd-cover-panel .shelf-select-btn {
+    width: 220px !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .bd-buy-card {
+    width: 220px !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .bd-buy-card a,
+  .bd-buy-btn {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* STEP 5 — Separate footer pages */
+
+.contact-hero {
+  margin-bottom: 2rem;
+}
+
+.contact-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.contact-info-card strong {
+  color: white;
+  font-size: 1rem;
+}
+
+.contact-info-card p {
+  margin: 0.35rem 0 0;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.5rem;
+}
+
+.contact-form-card,
+.contact-side-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 1.5rem;
+}
+
+.contact-form-card h2,
+.contact-side-card h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.4rem;
+}
+
+.contact-form-card p,
+.contact-side-card p {
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.contact-form-card form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.contact-form-card input,
+.contact-form-card select,
+.contact-form-card textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-sans);
+  background: var(--surface-soft);
+  color: var(--text);
+  outline: none;
+}
+
+.contact-form-card textarea {
+  resize: vertical;
+}
+
+@media (max-width: 760px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* STEP 5 FINAL POLISH — Footer Pages */
+
+.simple-hero {
+  text-align: center;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* 🔥 Purple badge (like your reference) */
+.simple-hero span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.02em;
+}
+
+/* Title (match Home hero feel) */
+.simple-hero h1 {
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  margin-bottom: 1rem;
+}
+
+/* Description */
+.simple-hero p {
+  max-width: 640px;
+  margin: 0 auto 1.6rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* Buttons spacing */
+.simple-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+/* Cards spacing improvement */
+.simple-card-grid {
+  margin-top: 1rem;
+  gap: 1.2rem;
+}
+
+/* Card polish */
+.simple-card {
+  border-radius: 20px;
+  padding: 1.4rem;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.simple-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+/* Card text */
+.simple-card h3 {
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.simple-card p {
+  font-size: 0.95rem;
+}
+
+/* Mobile spacing fix */
+@media (max-width: 640px) {
+  .simple-hero {
+    padding: 2rem 1rem;
+  }
+
+  .simple-hero h1 {
+    font-size: 2rem;
+  }
+
+  .simple-hero p {
+    font-size: 0.95rem;
+  }
+}
+
+.simple-hero {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(99,102,241,0.12), transparent 35%),
+    linear-gradient(135deg, var(--surface), var(--surface-soft));
+  border-radius: 28px;
+  border: 1px solid var(--border);
+}
+
+/* STEP 8 — Auth reliability polish */
+
+.auth-btn:disabled,
+.auth-google-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.auth-error {
+  background: #fff1f0;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+/* STEP 10 — Not found page */
+
+.not-found-page {
+  max-width: 760px;
+  margin: 3rem auto;
+}
+
+.not-found-page {
+  max-width: 700px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.notfound-image {
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+}
+
+/* mobile polish */
+@media (max-width: 600px) {
+  .notfound-image {
+    max-width: 300px;
+  }
+}
+
+.notfound-image {
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+  animation: float404 3s ease-in-out infinite;
+}
+
+@keyframes float404 {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0);
   }
 }

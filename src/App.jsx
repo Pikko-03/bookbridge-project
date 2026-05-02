@@ -13,6 +13,10 @@ import About from "./pages/About";
 import Careers from "./pages/Careers";
 import HelpCenter from "./pages/HelpCenter";
 import "./App.css";
+import Community from "./pages/Community";
+import ContactFeedback from "./pages/ContactFeedback";
+import Terms from "./pages/Terms";
+import NotFound from "./pages/NotFound";
 
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import {
@@ -360,17 +364,27 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  const handleLogout = async () => {
-    await signOut(auth);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-    setUser(null);
-    setShelves({ want: [], reading: [], read: [] });
-    setReviews({});
+const handleLogout = () => {
+  setShowLogoutModal(true);
+};
 
-  
+const confirmLogout = async () => {
+  await signOut(auth);
 
-    navigate("home");
-  };
+  setUser(null);
+  setShelves({ want: [], reading: [], read: [] });
+  setReviews({});
+
+  setShowLogoutModal(false);
+  navigate("home");
+};
+
+const cancelLogout = () => {
+  setShowLogoutModal(false);
+};
+
 
   const totalBooks = Object.values(shelves).flat().length;
 
@@ -476,11 +490,56 @@ export default function App() {
         {page === "signup" && (
           <Signup navigate={navigate} onSignup={handleSignup} />
         )}
+
+        {page === "community" && <Community navigate={navigate} />}
+{page === "contact" && <ContactFeedback navigate={navigate} />}
+{page === "terms" && <Terms navigate={navigate} />}
+{![
+  "home",
+  "search",
+  "book",
+  "mybooks",
+  "profile",
+  "ai",
+  "about",
+  "careers",
+  "help",
+  "login",
+  "signup",
+  "privacy",
+  "terms",
+  "community",
+  "contact",
+].includes(page) && <NotFound navigate={navigate} />}
+        
       </main>
 
       <Footer navigate={navigate} />
 
       {toast && <div className="toast">{toast}</div>}
+      {showLogoutModal && (
+  <div className="modal-overlay">
+    <div className="logout-modal">
+      <div className="logout-modal-icon">↪</div>
+
+      <h2>Log out?</h2>
+
+      <p>
+        Are you sure you want to log out of your BookBridge account?
+      </p>
+
+      <div className="logout-modal-actions">
+        <button className="btn btn-secondary" onClick={cancelLogout}>
+          Cancel
+        </button>
+
+        <button className="btn btn-danger" onClick={confirmLogout}>
+          Yes, Log Out
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

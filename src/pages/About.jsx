@@ -73,7 +73,7 @@ export default function About({ navigate }) {
 
       <section className="about-section about-two-col reverse">
         <div className="about-image-placeholder">
-          <span>✨</span>
+          <span></span>
         </div>
 
         <div>

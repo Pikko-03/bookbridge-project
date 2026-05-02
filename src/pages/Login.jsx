@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-
 
 export default function Login({ navigate, onLogin }) {
   const [formData, setFormData] = useState({
@@ -11,49 +13,60 @@ export default function Login({ navigate, onLogin }) {
     password: "",
   });
 
-  const handleGoogleLogin = async () => {
-  try {
-    setLoading(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const firebaseUser = result.user;
-
+  const createUserProfileIfNeeded = async (firebaseUser, fallbackName) => {
     const userRef = doc(db, "users", firebaseUser.uid);
     const userSnap = await getDoc(userRef);
 
-    let userData;
-
     if (userSnap.exists()) {
-      userData = userSnap.data();
-    } else {
-      userData = {
-        uid: firebaseUser.uid,
-        name: firebaseUser.displayName || "BookBridge Reader",
-        email: firebaseUser.email,
-        joined: "2026",
-        favoriteAuthor: "",
-        readingGoal: 12,
-        preferredGenres: [],
-        bio: "",
-      };
-
-      await setDoc(userRef, userData);
+      return userSnap.data();
     }
 
-    localStorage.setItem("bookbridgeUser", JSON.stringify(userData));
-    onLogin(userData);
-    navigate("home");
-  } catch (err) {
-    setError("Google login failed.");
-  } finally {
-    setLoading(false);
-  }
-};
+    const userData = {
+      uid: firebaseUser.uid,
+      name: firebaseUser.displayName || fallbackName || "BookBridge Reader",
+      email: firebaseUser.email,
+      joined: "2026",
+      favoriteAuthor: "",
+      readingGoal: 12,
+      preferredGenres: [],
+      bio: "",
+    };
 
+    await setDoc(userRef, userData);
+    return userData;
+  };
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const handleGoogleLogin = async () => {
+    setError("");
+
+    try {
+      setLoading(true);
+
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const userData = await createUserProfileIfNeeded(result.user);
+
+      onLogin(userData);
+      navigate("home");
+    } catch (err) {
+      console.error("Google login failed:", err);
+
+      if (err.code === "auth/popup-closed-by-user") {
+        setError("Google login was cancelled.");
+      } else if (err.code === "auth/popup-blocked") {
+        setError("Popup was blocked. Please allow popups and try again.");
+      } else if (err.code === "auth/unauthorized-domain") {
+        setError("This domain is not authorized for Google login.");
+      } else {
+        setError("Google login failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -76,42 +89,25 @@ export default function Login({ navigate, onLogin }) {
     try {
       setLoading(true);
 
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const fallbackName = email.split("@")[0];
+      const userData = await createUserProfileIfNeeded(
+        userCredential.user,
+        fallbackName
       );
-
-      const firebaseUser = userCredential.user;
-
-      const userRef = doc(db, "users", firebaseUser.uid);
-      const userSnap = await getDoc(userRef);
-
-      let userData;
-
-      if (userSnap.exists()) {
-        userData = userSnap.data();
-      } else {
-        userData = {
-          uid: firebaseUser.uid,
-          name: firebaseUser.displayName || email.split("@")[0],
-          email: firebaseUser.email,
-          joined: "2026",
-          favoriteAuthor: "",
-          readingGoal: 12,
-          preferredGenres: [],
-          bio: "",
-        };
-
-        await setDoc(userRef, userData);
-      }
-
-      localStorage.setItem("bookbridgeUser", JSON.stringify(userData));
 
       onLogin(userData);
       navigate("home");
     } catch (err) {
-      setError("Invalid email or password.");
+      console.error("Email login failed:", err);
+
+      if (err.code === "auth/invalid-credential") {
+        setError("Invalid email or password.");
+      } else if (err.code === "auth/too-many-requests") {
+        setError("Too many attempts. Please wait and try again.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -130,6 +126,7 @@ export default function Login({ navigate, onLogin }) {
             placeholder="Email address"
             value={formData.email}
             onChange={handleChange}
+            disabled={loading}
           />
 
           <input
@@ -138,21 +135,25 @@ export default function Login({ navigate, onLogin }) {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
+            disabled={loading}
           />
 
           {error && <p className="auth-error">{error}</p>}
+
           <button
-  type="button"
-  className="auth-google-btn"
-  onClick={handleGoogleLogin}
->
-  <img
-    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJg75LWB1zIJt1VTZO7O68yKciaDSkk3KMdw&s"
-    alt="Google logo"
-    className="google-icon"
-  />
-  Continue with Google
-</button>
+            type="button"
+            className="auth-google-btn"
+            onClick={handleGoogleLogin}
+            disabled={loading}
+          >
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJg75LWB1zIJt1VTZO7O68yKciaDSkk3KMdw&s"
+              alt="Google logo"
+              className="google-icon"
+            />
+            {loading ? "Please wait..." : "Continue with Google"}
+          </button>
+
           <button type="submit" className="auth-btn" disabled={loading}>
             {loading ? "Logging in..." : "Log In"}
           </button>
@@ -160,7 +161,7 @@ export default function Login({ navigate, onLogin }) {
 
         <p className="auth-switch">
           Don’t have an account?{" "}
-          <span className="auth-link" onClick={() => navigate("signup")}>
+          <span className="auth-link" onClick={() => !loading && navigate("signup")}>
             Sign up
           </span>
         </p>

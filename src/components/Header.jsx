@@ -7,15 +7,11 @@ export default function Header({
   user,
   onLogout,
 }) {
-  const [q, setQ] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (q.trim()) {
-      navigate("search");
-      setDrawerOpen(false);
-    }
+  const goToSearch = () => {
+    navigate("search");
+    setDrawerOpen(false);
   };
 
   const handleNav = (target) => {
@@ -23,30 +19,25 @@ export default function Header({
     setDrawerOpen(false);
   };
 
-  const getInitial = () =>
-    user?.name?.charAt(0)?.toUpperCase() || "U";
+  const getInitial = () => user?.name?.charAt(0)?.toUpperCase() || "U";
 
   return (
     <>
       <header className="header">
         <div className="header-inner">
-
-          {/* ── Logo ── */}
           <div className="logo" onClick={() => navigate("home")}>
             Book<span>Bridge</span>
           </div>
 
-          {/* ── Desktop: search bar ── */}
-          <form className="header-search" onSubmit={handleSearch}>
-            <input
-              type="text"
-              placeholder="Search books, authors..."
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-            />
-          </form>
+          <button
+            type="button"
+            className="header-search header-search-button"
+            onClick={goToSearch}
+            aria-label="Go to Browse Books"
+          >
+            <span>Search books, authors...</span>
+          </button>
 
-          {/* ── Desktop: nav links ── */}
           <nav className="nav">
             <button className={`nav-btn ${page === "home" ? "active" : ""}`} onClick={() => navigate("home")}>Home</button>
             <button className={`nav-btn ${page === "search" ? "active" : ""}`} onClick={() => navigate("search")}>Browse</button>
@@ -57,7 +48,6 @@ export default function Header({
             <button className={`nav-btn ${page === "ai" ? "active" : ""}`} onClick={() => navigate("ai")}>Recommendations</button>
           </nav>
 
-          {/* ── Desktop: auth buttons ── */}
           <div className="header-auth">
             {user ? (
               <>
@@ -80,7 +70,6 @@ export default function Header({
             )}
           </div>
 
-          {/* ── Mobile: hamburger button ── */}
           <button
             className="hamburger-btn"
             onClick={() => setDrawerOpen(true)}
@@ -90,20 +79,15 @@ export default function Header({
             <span />
             <span />
           </button>
-
         </div>
       </header>
 
-      {/* ── Mobile drawer overlay ── */}
       <div
         className={`nav-drawer-overlay ${drawerOpen ? "open" : ""}`}
         onClick={() => setDrawerOpen(false)}
       />
 
-      {/* ── Mobile drawer panel ── */}
       <div className={`nav-drawer ${drawerOpen ? "open" : ""}`}>
-
-        {/* Drawer header */}
         <div className="nav-drawer-header">
           <div className="nav-drawer-logo">
             Book<span>Bridge</span>
@@ -113,17 +97,14 @@ export default function Header({
           </button>
         </div>
 
-        {/* Drawer search */}
-        <form className="nav-drawer-search" onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Search books, authors..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-        </form>
+        <button
+          type="button"
+          className="nav-drawer-search nav-drawer-search-button"
+          onClick={goToSearch}
+        >
+          Search books, authors...
+        </button>
 
-        {/* Drawer nav links */}
         <div className="nav-drawer-links">
           <button className={`nav-drawer-btn ${page === "home" ? "active" : ""}`} onClick={() => handleNav("home")}>🏠 Home</button>
           <button className={`nav-drawer-btn ${page === "search" ? "active" : ""}`} onClick={() => handleNav("search")}>🔍 Browse Books</button>
@@ -136,7 +117,6 @@ export default function Header({
           <button className={`nav-drawer-btn ${page === "help" ? "active" : ""}`} onClick={() => handleNav("help")}>❓ Help Center</button>
         </div>
 
-        {/* Drawer auth */}
         <div className="nav-drawer-auth">
           {user ? (
             <>
@@ -144,7 +124,13 @@ export default function Header({
                 <span className="header-avatar">{getInitial()}</span>
                 <span>{user.name || "My Profile"}</span>
               </button>
-              <button className="auth-mini-btn logout-mini-btn" onClick={() => { onLogout(); setDrawerOpen(false); }}>
+              <button
+                className="auth-mini-btn logout-mini-btn"
+                onClick={() => {
+                  setDrawerOpen(false);
+                  onLogout();
+                }}
+              >
                 Logout
               </button>
             </>
@@ -155,7 +141,6 @@ export default function Header({
             </>
           )}
         </div>
-
       </div>
     </>
   );

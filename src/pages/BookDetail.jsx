@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import BookCover from "../components/BookCover";
 import StarRating from "../components/StarRating";
 import ShelfSelector from "../components/ShelfSelector";
@@ -64,6 +64,31 @@ export default function BookDetail({
   const [saved, setSaved] = useState(!!review);
 
   const currentShelf = getShelf(book);
+
+  const reviewsRef = useRef(null);
+const authorRef = useRef(null);
+
+const scrollToReviews = () => {
+  setActiveTab("reviews");
+
+  setTimeout(() => {
+    reviewsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, 80);
+};
+
+const scrollToAuthor = () => {
+  setActiveTab("overview");
+
+  setTimeout(() => {
+    authorRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, 80);
+};
 
   useEffect(() => {
     setRating(review?.rating || 0);
@@ -263,36 +288,45 @@ const sortedReviews = [...filteredReviews].sort((a, b) => {
           />
 
           <div className="bd-buy-card">
-            <span>Buy this book</span>
-            <a
-              href={`https://www.amazon.com/s?k=${encodeURIComponent(book.title)}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Amazon
-            </a>
-            <a
-              href={`https://www.google.com/search?q=${encodeURIComponent(
-                book.title + " Google Books"
-              )}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Google Books
-            </a>
-          </div>
+  <span>Buy this book</span>
+
+  <a
+    className="bd-buy-btn"
+    href={`https://www.amazon.com/s?k=${encodeURIComponent(book.title)}`}
+    target="_blank"
+    rel="noreferrer"
+  >
+    Buy on Amazon
+  </a>
+
+  <a
+    className="bd-buy-btn secondary"
+    href={`https://www.google.com/search?q=${encodeURIComponent(
+      book.title + " Google Books"
+    )}`}
+    target="_blank"
+    rel="noreferrer"
+  >
+    Find on Google Books
+  </a>
+</div>
         </aside>
 
         <main className="bd-main-info">
           <div className="bd-kicker">Book Details</div>
           <h1>{book.title}</h1>
-          <p className="bd-author">by {authorName}</p>
+          <p className="bd-author">
+  by{" "}
+  <button className="bd-author-link" onClick={scrollToAuthor}>
+    {authorName}
+  </button>
+</p>
 
-          <div className="bd-rating-row">
+          <button className="bd-rating-row bd-rating-clickable" onClick={scrollToReviews}>
             <StarRating value={Math.round(Number(averageRating))} readOnly />
             <strong>{averageRating}</strong>
             <span>3,434 ratings · 511 reviews</span>
-          </div>
+          </button>
 
           <p className="bd-description">
             {description
@@ -392,7 +426,7 @@ const sortedReviews = [...filteredReviews].sort((a, b) => {
       </div>
     </div>
 
-    <div className="bd-card bd-author-card-v2">
+    <div className="bd-card bd-author-card-v2" ref={authorRef}>
       <h2>About the author</h2>
 
       <div className="bd-author-box-v2">
@@ -456,7 +490,7 @@ const sortedReviews = [...filteredReviews].sort((a, b) => {
 )}
 
       {activeTab === "reviews" && (
-        <section className="bd-reviews-section">
+        <section className="bd-reviews-section" ref={reviewsRef}>
           <div className="bd-section-head">
   <div>
     <h2>Community reviews</h2>

@@ -290,16 +290,24 @@ export default function Profile({ user, shelves, reviews, navigate }) {
 
         <div className="profile-actions">
           <button className="btn btn-primary" onClick={() => navigate("search")}>
-            Browse Books
-          </button>
+  Browse Books
+</button>
 
-          <button className="btn btn-secondary" onClick={() => navigate("mybooks")}>
-            My Library
-          </button>
+<button className="btn btn-secondary" onClick={() => navigate("mybooks")}>
+  My Library
+</button>
 
-          <button className="btn btn-outline" onClick={() => navigate("ai")}>
-            Recommendations
-          </button>
+<button className="btn btn-outline" onClick={() => navigate("ai")}>
+  Recommendations
+</button>
+
+<button className="btn btn-outline" onClick={() => navigate("help")}>
+  Help Center
+</button>
+
+<button className="btn btn-outline" onClick={() => navigate("contact")}>
+  Contact Us
+</button>
         </div>
       </section>
       
