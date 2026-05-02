@@ -141,8 +141,17 @@ export default function Login({ navigate, onLogin }) {
           />
 
           {error && <p className="auth-error">{error}</p>}
-          <button type="button" className="auth-google-btn" onClick={handleGoogleLogin}>
-  <span>🔵</span> Continue with Google
+          <button
+  type="button"
+  className="auth-google-btn"
+  onClick={handleGoogleLogin}
+>
+  <img
+    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJg75LWB1zIJt1VTZO7O68yKciaDSkk3KMdw&s"
+    alt="Google logo"
+    className="google-icon"
+  />
+  Continue with Google
 </button>
           <button type="submit" className="auth-btn" disabled={loading}>
             {loading ? "Logging in..." : "Log In"}

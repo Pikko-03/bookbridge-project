@@ -44,10 +44,10 @@ export default function Footer({ navigate }) {
 
            <div>
             <h4>Connect</h4>
-            <button><span>📘</span> Instagram</button>
-            <button><span>📘</span> Facebook</button>
-            <button><span>📘</span> Twitter</button>
-            <button><span>📘</span> Linkedin</button>
+            <button><span></span> Instagram</button>
+            <button><span></span> Facebook</button>
+            <button><span></span> Twitter</button>
+            <button><span></span> Linkedin</button>
           </div>
 
           <div>

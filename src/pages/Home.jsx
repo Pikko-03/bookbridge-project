@@ -199,7 +199,7 @@ export default function Home({
 
       <section className="home-v2-section">
         <div className="home-v2-section-head">
-          <h2>Browse by category</h2>
+          <h2>Browse By Category</h2>
           <p>Start with a genre and explore books that match your mood.</p>
         </div>
 
@@ -236,7 +236,7 @@ export default function Home({
 
       <section className="home-v2-section">
         <div className="home-v2-section-head">
-          <h2>Trending books</h2>
+          <h2>Trending Books</h2>
           <p>Popular picks readers are exploring now.</p>
         </div>
 
@@ -254,7 +254,7 @@ export default function Home({
       {user?.preferredGenres?.length > 0 && (
         <section className="home-v2-section">
           <div className="home-v2-section-head">
-            <h2>Based on your taste</h2>
+            <h2>Based on Your Taste</h2>
             <p>Picks based on {user.preferredGenres.slice(0, 3).join(", ")}.</p>
           </div>
 
@@ -282,7 +282,7 @@ export default function Home({
       {recentlyViewed.length > 0 && (
         <section className="home-v2-section">
           <div className="home-v2-section-head">
-            <h2>Recently viewed</h2>
+            <h2>Recently Viewed</h2>
             <p>Pick up where you left off.</p>
           </div>
 

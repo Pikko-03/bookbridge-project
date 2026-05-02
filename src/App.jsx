@@ -14,11 +14,12 @@ import Careers from "./pages/Careers";
 import HelpCenter from "./pages/HelpCenter";
 import "./App.css";
 
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   setDoc,
 } from "firebase/firestore";
@@ -47,21 +48,49 @@ export default function App() {
     return encodeURIComponent(bookKey || Date.now());
   };
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("bookbridgeUser");
-    const savedShelves = localStorage.getItem("bookbridgeShelves");
-    const savedReviews = localStorage.getItem("bookbridgeReviews");
-    const savedLastSearch = localStorage.getItem("bookbridgeLastSearch");
-    const savedRecentlyViewed = localStorage.getItem("bookbridgeRecentlyViewed");
-    const savedTheme = localStorage.getItem("bookbridgeTheme");
+ useEffect(() => {
+  const savedShelves = localStorage.getItem("bookbridgeShelves");
+  const savedReviews = localStorage.getItem("bookbridgeReviews");
+  const savedLastSearch = localStorage.getItem("bookbridgeLastSearch");
+  const savedRecentlyViewed = localStorage.getItem("bookbridgeRecentlyViewed");
+  const savedTheme = localStorage.getItem("bookbridgeTheme");
 
-    if (savedUser) setUser(JSON.parse(savedUser));
-    if (savedShelves) setShelves(JSON.parse(savedShelves));
-    if (savedReviews) setReviews(JSON.parse(savedReviews));
-    if (savedLastSearch) setLastSearchQuery(savedLastSearch);
-    if (savedRecentlyViewed) setRecentlyViewed(JSON.parse(savedRecentlyViewed));
-    if (savedTheme) setTheme(savedTheme);
-  }, []);
+  if (savedShelves) setShelves(JSON.parse(savedShelves));
+  if (savedReviews) setReviews(JSON.parse(savedReviews));
+  if (savedLastSearch) setLastSearchQuery(savedLastSearch);
+  if (savedRecentlyViewed) setRecentlyViewed(JSON.parse(savedRecentlyViewed));
+  if (savedTheme) setTheme(savedTheme);
+
+  const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    if (!firebaseUser) {
+      setUser(null);
+      return;
+    }
+
+    const userRef = doc(db, "users", firebaseUser.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      setUser(userSnap.data());
+    } else {
+      const userData = {
+        uid: firebaseUser.uid,
+        name: firebaseUser.displayName || "BookBridge Reader",
+        email: firebaseUser.email,
+        joined: "2026",
+        favoriteAuthor: "",
+        readingGoal: 12,
+        preferredGenres: [],
+        bio: "",
+      };
+
+      await setDoc(userRef, userData);
+      setUser(userData);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
 
   useEffect(() => {
     const loadShelvesFromFirestore = async () => {
@@ -310,7 +339,7 @@ export default function App() {
   };
 
   const handleLogin = (loggedInUser) => {
-    localStorage.setItem("bookbridgeUser", JSON.stringify(loggedInUser));
+    
     setUser(loggedInUser);
 
     const target = redirectAfterAuth || "home";
@@ -321,7 +350,7 @@ export default function App() {
   };
 
   const handleSignup = (newUser) => {
-    localStorage.setItem("bookbridgeUser", JSON.stringify(newUser));
+    
     setUser(newUser);
 
     const target = redirectAfterAuth || "home";
@@ -338,9 +367,7 @@ export default function App() {
     setShelves({ want: [], reading: [], read: [] });
     setReviews({});
 
-    localStorage.removeItem("bookbridgeUser");
-    localStorage.removeItem("bookbridgeShelves");
-    localStorage.removeItem("bookbridgeReviews");
+  
 
     navigate("home");
   };
