@@ -52,9 +52,13 @@ export default function Signup({ navigate, onSignup }) {
       firebaseUser.email?.split("@")[0] ||
       "BookBridge Reader",
     email: firebaseUser.email,
+    createdAt: existingData.createdAt || new Date().toISOString(),
     joined: existingData.joined || "2026",
-    favoriteAuthor: extraData.favoriteAuthor || existingData.favoriteAuthor || "",
-    readingGoal: Number(extraData.readingGoal || existingData.readingGoal || 12),
+    favoriteAuthor:
+      extraData.favoriteAuthor || existingData.favoriteAuthor || "",
+    readingGoal: Number(
+      extraData.readingGoal || existingData.readingGoal || 12
+    ),
     preferredGenres:
       extraData.preferredGenres?.length > 0
         ? extraData.preferredGenres
@@ -66,7 +70,6 @@ export default function Signup({ navigate, onSignup }) {
 
   return userData;
 };
-
   const handleGoogleLogin = async () => {
     setError("");
 

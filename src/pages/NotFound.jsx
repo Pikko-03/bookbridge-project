@@ -1,8 +1,10 @@
+import notFoundImg from "../assets/404.png";
 export default function NotFound({ navigate }) {
   return (
     <div className="empty-state not-found-page">
-      <div className="empty-icon">🧭</div>
-      <h3>Page not found</h3>
+      <img src={notFoundImg} alt="404 error" className="notfound-image" />
+
+      <h3>Oops! Page not found</h3>
       <p>
         The page you’re looking for doesn’t exist or may have been moved.
       </p>

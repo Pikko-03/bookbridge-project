@@ -16,6 +16,7 @@ import "./App.css";
 import Community from "./pages/Community";
 import ContactFeedback from "./pages/ContactFeedback";
 import Terms from "./pages/Terms";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 import { signOut, onAuthStateChanged } from "firebase/auth";
@@ -142,12 +143,15 @@ export default function App() {
 
           if (data.bookKey) {
             firebaseReviews[data.bookKey] = {
-              rating: data.rating,
-              text: data.text,
-              date: data.date,
-              helpful: data.helpful || 0,
-              updatedAt: data.updatedAt,
-            };
+  rating: data.rating,
+  text: data.text,
+  bookKey: data.bookKey,
+  bookTitle: data.bookTitle || "Unknown Book",
+  bookAuthor: data.bookAuthor || "Unknown Author",
+  date: data.date,
+  helpful: data.helpful || 0,
+  updatedAt: data.updatedAt,
+};
           }
         });
 
@@ -306,20 +310,33 @@ export default function App() {
 
     return null;
   };
+const addReview = async (bookKey, review) => {
+  if (!user) {
+    requireAuth("book", "Please log in to write a review.");
+    return;
+  }
 
-  const addReview = async (bookKey, review) => {
-    if (!user) {
-      requireAuth("book", "Please log in to write a review.");
-      return;
-    }
-
-    const reviewData = {
-      ...review,
-      bookKey,
-      date: review.date || new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      helpful: review.helpful || 0,
-    };
+  const reviewData = {
+    ...review,
+    bookKey,
+    // Fix: try all possible field names from Open Library API
+    bookTitle: selectedBook?.title || review.bookTitle || "Unknown Book",
+    bookAuthor:
+      selectedBook?.author ||
+      (Array.isArray(selectedBook?.authors)
+        ? selectedBook.authors.map((a) => a.name || a).join(", ")
+        : null) ||
+      selectedBook?.author_name?.[0] ||
+      review.bookAuthor ||
+      "Unknown Author",
+    date: review.date || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    helpful: review.helpful || 0,
+    // ✅ ADD: save reviewer info
+    reviewerName: user.name || "Anonymous",
+    reviewerEmail: user.email || "",
+    reviewerUid: user.uid || "",
+  };
 
     setReviews((prev) => {
       const updated = { ...prev, [bookKey]: reviewData };
@@ -497,6 +514,9 @@ const cancelLogout = () => {
         {page === "community" && <Community navigate={navigate} />}
 {page === "contact" && <ContactFeedback navigate={navigate} />}
 {page === "terms" && <Terms navigate={navigate} />}
+{page === "admin" && (
+  <AdminDashboard user={user} navigate={navigate} />
+)}
 {![
   "home",
   "search",
@@ -513,6 +533,7 @@ const cancelLogout = () => {
   "terms",
   "community",
   "contact",
+  "admin",
 ].includes(page) && <NotFound navigate={navigate} />}
         
       </main>
