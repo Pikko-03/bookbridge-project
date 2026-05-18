@@ -128,5 +128,5 @@ The purpose of BookBridge is to improve the digital reading experience by combin
 ## Author
 
 Htike San Winn
-School of Integrated Innovation
-Chulalongkorn University
+Bachelor Of Computing
+University of Roehampton
