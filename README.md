@@ -1,16 +1,132 @@
-# React + Vite
+# BookBridge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+BookBridge is a web-based book recommendation and reading management platform designed to help users discover books, organize reading activities, and receive personalized recommendations through a modern and responsive interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The platform integrates external book APIs and cloud-based backend services to create an interactive and user-friendly reading experience.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+### User Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* User Authentication
+* Google Sign-In
+* Book Search Functionality
+* Book Detail Pages
+* Personalized Bookshelves
+* Reading Progress Tracking
+* Review and Rating System
+* Reading Challenge Feature
+* AI Book Recommendation System
+* Responsive UI Design
+
+### Admin Features
+
+* Admin Dashboard
+* User Management
+* Review Management
+* Platform Monitoring
+
+---
+
+## Technologies Used
+
+### Frontend
+
+* React
+* Vite
+* HTML
+* CSS
+* JavaScript
+
+### Backend & Database
+
+* Firebase Authentication
+* Firestore Database
+
+### APIs
+
+* Google Books API
+* Open Library API
+
+### Deployment
+
+* Vercel
+
+### Tools
+
+* GitHub
+* Visual Studio Code
+* Figma
+
+---
+
+## System Architecture
+
+The application follows a frontend-cloud architecture:
+
+* React + Vite handles the frontend UI and user interaction.
+* Firebase Authentication manages secure login and Google authentication.
+* Firestore stores user data, reviews, bookshelves, and admin information.
+* External APIs provide real-time book information dynamically.
+
+---
+
+## Installation & Setup
+
+1. Clone the repository
+
+```bash
+git clone <repository-link>
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Run development server
+
+```bash
+npm run dev
+```
+
+4. Configure Firebase environment variables
+
+Create a `.env` file and add Firebase configuration keys.
+
+---
+
+## Deployment
+
+Live Website:
+https://bookbridge-project-indol.vercel.app/
+
+---
+
+## Future Improvements
+
+* Advanced recommendation algorithm
+* Social interaction features
+* Bookmarks and favorites
+* Dark mode support
+* Improved analytics dashboard
+* Mobile application version
+
+---
+
+## Project Purpose
+
+The purpose of BookBridge is to improve the digital reading experience by combining personalized recommendations, reading management tools, and community interaction into a single responsive platform.
+
+---
+
+## Author
+
+Htike San Winn
+School of Integrated Innovation
+Chulalongkorn University
